@@ -44,8 +44,10 @@ const questions = [
   ];
 
 function startQuiz() {
-    // start the timer
-    // present the first question
+    // hide the start screen
+    document.querySelector('#start-screen').style.display = 'none';
+    // show the quiz section
+    quizSection.style.display = 'block';
 }
   
 function presentQuestion() {

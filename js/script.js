@@ -99,7 +99,7 @@ function checkAnswer(answer) {
     // if correct, return true
     // if incorrect, return false
     const currentQuestion = questions[currentQuestionIndex];
-    return answerIndex === currentQuestion.correctAnswerIndex;
+    return answer === currentQuestion.correctAnswerIndex;
 }
 
 function subtractTime() {

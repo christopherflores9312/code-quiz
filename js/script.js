@@ -8,6 +8,12 @@ const timerDisplay = document.querySelector('#timer');
 
 startButton.addEventListener('click', startQuiz);
 
+// set up variables
+let timerInterval;
+let timer = 60; // in seconds
+let currentQuestionIndex = 0;
+let score = 0;
+
 function startQuiz() {
     // start the timer
     // present the first question

@@ -6,6 +6,8 @@ const scoreDisplay = document.querySelector('#score');
 const initialsInput = document.querySelector('#initials');
 const timerDisplay = document.querySelector('#timer');
 
+startButton.addEventListener('click', startQuiz);
+
 function startQuiz() {
     // start the timer
     // present the first question

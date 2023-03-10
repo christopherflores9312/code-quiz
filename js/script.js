@@ -70,9 +70,8 @@ function presentQuestion() {
 }
 
 function checkAnswer(answer) {
-    // check if the answer is correct
-    // if correct, return true
-    // if incorrect, return false
+    const currentQuestion = questions[currentQuestionIndex];
+    return answerIndex === currentQuestion.correctAnswerIndex;
 }
 
 function subtractTime() {

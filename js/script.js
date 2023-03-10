@@ -62,42 +62,34 @@ function startQuiz() {
 }
 
 function presentQuestion() {
-    // present a question
-    // wait for an answer
-    // check if the answer is correct
-    // if correct, present the next question
-    // if incorrect, subtract time from the timer and present the next question
-    // get the current question
     const currentQuestion = questions[currentQuestionIndex];
     // update the question and answer options in the DOM
     document.querySelector('#quiz h2').textContent = `Question ${currentQuestionIndex + 1}:`;
     document.querySelector('#quiz p').textContent = currentQuestion.question;
     const answerButtons = document.querySelectorAll('#quiz button');
-    for (let i = 0; i < answerButtons.length; i++) {
-        answerButtons[i].textContent = currentQuestion.answers[i];
-        answerButtons[i].addEventListener('click', function () {
-            // check if the answer is correct
-            const isCorrect = checkAnswer(i);
-            if (isCorrect) {
-                score += 10;
-            } else {
-                subtractTime();
-            }
-            // check if there are more questions to show
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                presentQuestion();
-            } else {
-                endGame();
-            }
-        });
+    answerButtons.forEach((button, i) => {
+        button.textContent = currentQuestion.answers[i];
+        button.removeEventListener('click', answerButtonClickHandler);
+        button.addEventListener('click', answerButtonClickHandler);
+    });
+}
+
+function answerButtonClickHandler() {
+    const isCorrect = checkAnswer(this.dataset.index);
+    if (isCorrect) {
+        score += 10;
+    } else {
+        subtractTime();
+    }
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        presentQuestion();
+    } else {
+        endGame();
     }
 }
 
 function checkAnswer(answer) {
-    // check if the answer is correct
-    // if correct, return true
-    // if incorrect, return false
     const currentQuestion = questions[currentQuestionIndex];
     return answer === currentQuestion.correctAnswerIndex;
 }

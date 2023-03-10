@@ -67,6 +67,31 @@ function presentQuestion() {
     // check if the answer is correct
     // if correct, present the next question
     // if incorrect, subtract time from the timer and present the next question
+    // get the current question
+    const currentQuestion = questions[currentQuestionIndex];
+    // update the question and answer options in the DOM
+    document.querySelector('#quiz h2').textContent = `Question ${currentQuestionIndex + 1}:`;
+    document.querySelector('#quiz p').textContent = currentQuestion.question;
+    const answerButtons = document.querySelectorAll('#quiz button');
+    for (let i = 0; i < answerButtons.length; i++) {
+        answerButtons[i].textContent = currentQuestion.answers[i];
+        answerButtons[i].addEventListener('click', function () {
+            // check if the answer is correct
+            const isCorrect = checkAnswer(i);
+            if (isCorrect) {
+                score += 10;
+            } else {
+                subtractTime();
+            }
+            // check if there are more questions to show
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                presentQuestion();
+            } else {
+                endGame();
+            }
+        });
+    }
 }
 
 function checkAnswer(answer) {
@@ -85,8 +110,27 @@ function subtractTime() {
 
 function endGame() {
     // stop the timer
-    // present the score
-    // ask the user to save their initials and score
+    clearInterval(timerInterval);
+    // hide the quiz section
+    quizSection.style.display = 'none';
+    // show the game over section
+    gameOverSection.style.display = 'block';
+    // display the final score
+    scoreDisplay.textContent = score;
+    // add a submit event listener to the form
+    document.querySelector('form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const initials = initialsInput.value.trim().toUpperCase();
+        // validate the initials input
+        if (initials.length > 0 && initials.length <= 3) {
+            // save the score and initials to local storage
+            const scores = JSON.parse(localStorage.getItem('scores')) || [];
+            scores.push({ initials, score });
+            localStorage.setItem('scores', JSON.stringify(scores));
+            // redirect to the high scores page
+            window.location.href = 'high-scores.html';
+        }
+    });
 }
 
 function saveScore(initials, score) {

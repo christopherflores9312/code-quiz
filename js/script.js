@@ -6,11 +6,12 @@ const scoreDisplay = document.querySelector('#score');
 const initialsInput = document.querySelector('#initials');
 const timerDisplay = document.querySelector('#timer');
 
+// add a click event listener to the start button
 startButton.addEventListener('click', startQuiz);
 
 // set up variables
 let timerInterval;
-let timer = 60; // in seconds
+let timer = 120; // in seconds
 let currentQuestionIndex = 0;
 let score = 0;
 
@@ -49,70 +50,87 @@ function startQuiz() {
     // show the quiz section
     quizSection.style.display = 'block';
     // start the timer
+    // Set a variable to hold the interval ID returned by setInterval
     timerInterval = setInterval(function () {
+        // Decrement the timer variable by 1
         timer--;
+        // Update the text content of the timerDisplay element to display the updated timer value
         timerDisplay.textContent = `Time: ${timer}`;
+        // If the timer reaches 0 or below, stop the interval and call the endGame function
         if (timer <= 0) {
             clearInterval(timerInterval);
             endGame();
         }
     }, 1000);
+
     // present the first question
     presentQuestion();
 }
 
 function presentQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
-    // update the question and answer options in the DOM
+    // get the current question from the questions array
     document.querySelector('#quiz h2').textContent = `Question ${currentQuestionIndex + 1}:`;
+    // update the question number in the DOM
     document.querySelector('#quiz p').textContent = currentQuestion.question;
+    // update the question text in the DOM
     const answerButtons = document.querySelectorAll('#quiz button');
+    // get all answer buttons from the DOM
     answerButtons.forEach((button, i) => {
         button.textContent = currentQuestion.answers[i];
+        button.dataset.index = button.getAttribute("data-ans");
+        // set the text for each answer button
         button.removeEventListener('click', answerButtonClickHandler);
+        // remove the click event listener for each button
         button.addEventListener('click', answerButtonClickHandler);
+        // add the click event listener for each button
     });
 }
 
+
+// This function handles the click event for answer buttons.
 function answerButtonClickHandler() {
-    const isCorrect = checkAnswer(this.dataset.index);
+    const isCorrect = checkAnswer(this.dataset.index); // check if the clicked answer is correct
     if (isCorrect) {
-        score += 10;
+        score += 10; // if the answer is correct, add 10 points to the score
     } else {
-        subtractTime();
+        subtractTime(); // if the answer is incorrect, subtract 10 seconds from the timer
     }
-    currentQuestionIndex++;
+    currentQuestionIndex++; // move on to the next question
     if (currentQuestionIndex < questions.length) {
-        presentQuestion();
+        presentQuestion(); // if there are more questions, present the next question
     } else {
-        endGame();
+        endGame(); // if all questions have been answered, end the game
     }
 }
 
+// This function checks if the selected answer is correct.
 function checkAnswer(answer) {
-    const currentQuestion = questions[currentQuestionIndex];
-    return answer === currentQuestion.correctAnswerIndex;
+    const currentQuestion = questions[currentQuestionIndex]; // get the current question
+    //return answer === currentQuestion.correctAnswerIndex; // check if the selected answer index is equal to the correct answer index
+    if(parseInt(answer) === currentQuestion.correctAnswerIndex){
+        return true;
+    }else {
+        return false;
+    }
 }
 
+// This function subtracts 10 seconds from the timer.
 function subtractTime() {
-    // subtract time from the timer
-    timer -= 10;
-    timerDisplay.textContent = `Time: ${timer}`;
+    timer -= 10; // subtract 10 seconds from the timer
+    timerDisplay.textContent = `Time: ${timer}`; // update the timer display in the DOM
 }
 
+// This function ends the game and displays the game over screen.
 function endGame() {
-    // stop the timer
-    clearInterval(timerInterval);
-    // hide the quiz section
-    quizSection.style.display = 'none';
-    // show the game over section
-    gameOverSection.style.display = 'block';
-    // display the final score
-    scoreDisplay.textContent = score;
+    clearInterval(timerInterval); // stop the timer
+    quizSection.style.display = 'none'; // hide the quiz section
+    gameOverSection.style.display = 'block'; // show the game over section
+    scoreDisplay.textContent = score; // display the final score
     // add a submit event listener to the form
     document.querySelector('form').addEventListener('submit', function (event) {
         event.preventDefault();
-        const initials = initialsInput.value.trim().toUpperCase();
+        const initials = initialsInput.value.trim().toUpperCase(); // get the initials input and convert to uppercase
         // validate the initials input
         if (initials.length > 0 && initials.length <= 3) {
             // save the score and initials to local storage
@@ -125,6 +143,7 @@ function endGame() {
     });
 }
 
+// This function saves the initials and score.
 function saveScore(initials, score) {
     // save the initials and score
 }
